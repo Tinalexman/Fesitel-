@@ -7,7 +7,7 @@ public class KeyGenerator {
     private static final List<String> generatedKeys = new ArrayList<>();
     private static final String characterPool = "aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ";
     
-    public static int generateRailFenceCipherKey(int value) {
+    public static int generateRailFenceCipherKey() {
         return 0b0000000011011011;
         // return value << 8;
     }

