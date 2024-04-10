@@ -1,5 +1,7 @@
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.CharBuffer;
+import java.nio.IntBuffer;
 
 
 public class Ransomware {
@@ -14,14 +16,15 @@ public class Ransomware {
             message = checkAndPad(message);
         }
 
-        int[] messageBytes = convertByteArrayToIntArray(message.getBytes());
-
+    
+        int[] messageBytes = convertCharArrayToIntArray(message.toCharArray());
+        
         int[] data = switch (mode) {
             case Encrypt -> FesitelAlgorithm.encrypt(messageBytes);
             case Decrypt -> FesitelAlgorithm.decrypt(messageBytes);
         };
-        
-        String response = new String(convertIntArrayToByteArray(data));
+    
+        String response = new String(convertIntArrayToCharArray(data));
         if(mode == Mode.Decrypt) {
             response.trim();
         }
@@ -43,22 +46,33 @@ public class Ransomware {
         return message;
     }
 
-    private static byte[] convertIntArrayToByteArray(int[] data) {
+    private static char[] convertIntArrayToCharArray(int[] data) {
         ByteBuffer byteBuffer = ByteBuffer.allocate(data.length * 4);
         byteBuffer.order(ByteOrder.BIG_ENDIAN);
         for (int value : data) {
             byteBuffer.putInt(value);
         }
-        return byteBuffer.array();
+        byte[] byteArray = byteBuffer.array();
+        ByteBuffer byteBufferForChar = ByteBuffer.wrap(byteArray);
+        CharBuffer charBuffer = byteBufferForChar.asCharBuffer();
+        char[] charArray = new char[byteArray.length / 2];
+        charBuffer.get(charArray);
+        return charArray;
     }
+    
 
-    private static int[] convertByteArrayToIntArray(byte[] data) {
-        ByteBuffer byteBuffer = ByteBuffer.wrap(data);
+    private static int[] convertCharArrayToIntArray(char[] data) {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(data.length * 2);
         byteBuffer.order(ByteOrder.BIG_ENDIAN);
-        int[] intArray = new int[data.length / 4];
-        for (int i = 0; i < intArray.length; i++) {
-            intArray[i] = byteBuffer.getInt();
+        for (char value : data) {
+            byteBuffer.putChar(value);
         }
+        byte[] byteArray = byteBuffer.array();
+        ByteBuffer byteBufferForInt = ByteBuffer.wrap(byteArray);
+        IntBuffer intBuffer = byteBufferForInt.asIntBuffer();
+        int[] intArray = new int[byteArray.length / 4];
+        intBuffer.get(intArray);
         return intArray;
     }
+    
 }
