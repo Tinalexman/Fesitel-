@@ -4,10 +4,10 @@ public class Main {
         // System.out.println("Original Message: " + message);
 
         String encryptedMessage = Ransomware.process(message, Ransomware.Mode.Encrypt);
-        System.out.println("Encrypted Message: " + encryptedMessage);
+        // System.out.println("Encrypted Message: " + encryptedMessage);
 
         String decryptedMessage = Ransomware.process(encryptedMessage, Ransomware.Mode.Decrypt);
-        System.out.println("Decrypted Message: " + decryptedMessage);
+        // System.out.println("Decrypted Message: " + decryptedMessage);
     }
 }
 

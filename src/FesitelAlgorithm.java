@@ -18,6 +18,11 @@ public class FesitelAlgorithm {
             data[i] = modifiedValue;
         }
 
+        System.out.println("After Encryption");
+        for(int i = 0; i < data.length; ++i) {
+            System.out.print(data[i] + " ");
+        }
+
         return data;
     }
 
@@ -29,12 +34,10 @@ public class FesitelAlgorithm {
         int response = l1;
         response <<= 16;
         response |= r1;
-        System.out.println("Response: " + response);
         return response;
     }
 
     private static int decryptRound(int value) {
-        System.out.println("Value " + value);
         int l1 = value >> 16, r1 = ((value << 16) >> 16);
         int r0 = l1;
         int E = KeyGenerator.generateRailFenceCipherKey(r0);
@@ -46,7 +49,11 @@ public class FesitelAlgorithm {
     }
 
     public static int[] decrypt(int[] data) {
-        // data = new int[] { 1769166003, 1931485362, 1835360763, 1634169768, 538994171  };
+        System.out.println("\nBefore decryption");
+        for(int i = 0; i < data.length; ++i) {
+            System.out.print(data[i] + " ");
+        }
+
         for (int i = 0; i < data.length; ++i) {
             int modifiedValue = decryptRound(data[i]);
             data[i] = modifiedValue;

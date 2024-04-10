@@ -22,9 +22,9 @@ public class Ransomware {
         };
         
         String response = new String(convertIntArrayToByteArray(data));
-        // if(mode == Mode.Decrypt) {
-        //     response.trim();
-        // }
+        if(mode == Mode.Decrypt) {
+            response.trim();
+        }
 
         return response;
     }
