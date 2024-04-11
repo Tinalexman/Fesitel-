@@ -1,5 +1,1 @@
-This is a message
-This is a message
-This is a message
-This is a message
-This is a message   
+This is another test that tests if the algirithm is actually working
