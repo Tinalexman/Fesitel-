@@ -34,7 +34,11 @@ public class FesitelAlgorithm {
     }
 
     private static int combine(int value, int key) {
-        return key;
+        int response = (value * 2) | 0b00001011;
+        response ^= key;
+        response >>= 2;
+        response &= 0x00FF;
+        return response;
     }
 
     private static int encryptRound(int value, int key) {
