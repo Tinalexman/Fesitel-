@@ -1,7 +1,6 @@
 import java.util.Random;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class KeyGenerator {
     private static final long SEED = 98942897316645566L;
