@@ -29,15 +29,15 @@ public class KeyGenerator {
     }
 
     public static int generateRailFenceCipherKey(int input) {
-        return input;
+        return input % characterPool.length();
     }
 
     private static int generateColumnarCipherKey(int input) {
-        return input;
+        return Integer.reverse(input);
     }
 
     private static int generateVignereCipherKey(int input) {
-        return input;
+        return ~input;
     }
 
 }
