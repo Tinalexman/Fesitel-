@@ -26,12 +26,12 @@ class KeyGenerator:
 
     @staticmethod
     def generate_rail_fence_cipher_key(input):
-        return input
+        return input %len(KeyGenerator.CHARACTER_POOL)
 
     @staticmethod
     def generate_columnar_cipher_key(input):
-        return input
+        return int('{:032b}'.format(input)[::-1], 2)
 
     @staticmethod
     def generate_vigenere_cipher_key(input):
-        return input
+        return ~input
